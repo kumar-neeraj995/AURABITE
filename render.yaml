@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: aurabite-backend
+    env: node
+    plan: free
+    rootDir: project_/backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.18.0
