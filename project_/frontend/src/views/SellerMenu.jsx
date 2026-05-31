@@ -24,7 +24,7 @@ const SellerMenu = () => {
   const fetchMenu = async () => {
     if (!user?.restaurantId) return;
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants/${user.restaurantId}`);
+      const res = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/restaurants/${user.restaurantId}`);
       if (res.data.success) {
         setMenuItems(res.data.data.menuItems);
       }
@@ -62,9 +62,9 @@ const SellerMenu = () => {
 
       let res;
       if (isEditing) {
-        res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu/${editingId}`, payload);
+        res = await axios.put(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/menu/${editingId}`, payload);
       } else {
-        res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu`, payload);
+        res = await axios.post(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/menu`, payload);
       }
 
       if (res.data.success) {
@@ -94,7 +94,7 @@ const SellerMenu = () => {
     if (!window.confirm('Are you sure you want to delete this menu item?')) return;
 
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu/${itemId}`);
+      const res = await axios.delete(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/menu/${itemId}`);
       if (res.data.success) {
         fetchMenu();
       }

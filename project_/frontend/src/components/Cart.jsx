@@ -54,7 +54,7 @@ const Cart = ({ isOpen, onClose }) => {
         quantity: item.quantity
       }));
 
-      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
+      const res = await axios.post(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/orders`, {
         restaurantId: cartRestaurant.id,
         items: itemsPayload,
         deliveryAddress: {

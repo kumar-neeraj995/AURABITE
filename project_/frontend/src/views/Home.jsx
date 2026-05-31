@@ -14,7 +14,7 @@ const Home = () => {
     window.scrollTo(0, 0);
     const fetchRestaurants = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants`);
+        const res = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/restaurants`);
         if (res.data.success) {
           setRestaurants(res.data.data);
           setFilteredRestaurants(res.data.data);

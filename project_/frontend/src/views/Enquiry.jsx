@@ -33,7 +33,7 @@ const Enquiry = () => {
 
     setIsSubmitting(true);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries`, {
+      const res = await axios.post(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/enquiries`, {
         name,
         email,
         subject,
