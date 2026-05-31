@@ -26,7 +26,7 @@ const SellerSettings = () => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:5000/api/restaurants/${user.restaurantId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants/${user.restaurantId}`);
       if (res.data.success) {
         const rest = res.data.data.restaurant;
         setRestaurant(rest);
@@ -74,10 +74,10 @@ const SellerSettings = () => {
       let res;
       if (restaurant) {
         // Edit existing
-        res = await axios.put(`http://localhost:5000/api/restaurants/${restaurant._id}`, payload);
+        res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants/${restaurant._id}`, payload);
       } else {
         // Create new
-        res = await axios.post('http://localhost:5000/api/restaurants', payload);
+        res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants`, payload);
       }
 
       if (res.data.success) {

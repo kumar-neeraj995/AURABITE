@@ -11,7 +11,7 @@ const SellerOrders = () => {
 
   const fetchSellerOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/orders');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`);
       if (res.data.success) {
         setOrders(res.data.data);
       }
@@ -58,7 +58,7 @@ const SellerOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/${orderId}/status`, {
         status: newStatus
       });
 

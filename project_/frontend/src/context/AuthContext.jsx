@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
           setAuthHeader(parsedUser.token);
           
           // Verify token against backend
-          const res = await axios.get('http://localhost:5000/api/auth/me');
+          const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/me`);
           
           if (res.data.success) {
             const updatedUser = { ...parsedUser, ...res.data };
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password, isOtpLogin, role });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, { email, password, isOtpLogin, role });
       if (res.data.success) {
         const userData = res.data;
         setUser(userData);
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, {
         username,
         email,
         password,
