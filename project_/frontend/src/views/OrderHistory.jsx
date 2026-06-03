@@ -20,7 +20,7 @@ const OrderHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/orders`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`);
       if (res.data.success) {
         setOrders(res.data.data);
       }

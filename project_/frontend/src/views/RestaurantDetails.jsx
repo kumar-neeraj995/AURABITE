@@ -29,7 +29,7 @@ const RestaurantDetails = () => {
 
   const fetchDetails = async () => {
     try {
-      const res = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/restaurants/${id}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants/${id}`);
       if (res.data.success) {
         setRestaurant(res.data.data.restaurant);
         setMenuItems(res.data.data.menuItems);
@@ -91,7 +91,7 @@ const RestaurantDetails = () => {
 
     setSubmitLoading(true);
     try {
-      const res = await axios.post(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/reviews`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews`, {
         restaurantId: restaurant._id,
         rating: newRating,
         comment: newComment
@@ -113,7 +113,7 @@ const RestaurantDetails = () => {
     if (!window.confirm('Are you sure you want to delete your review?')) return;
 
     try {
-      const res = await axios.delete(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/reviews/${reviewId}`);
+      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${reviewId}`);
       if (res.data.success) {
         fetchDetails();
       }
@@ -139,7 +139,7 @@ const RestaurantDetails = () => {
     }
 
     try {
-      const res = await axios.put(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/reviews/${editingReviewId}`, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${editingReviewId}`, {
         rating: editRating,
         comment: editComment
       });

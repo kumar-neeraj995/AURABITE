@@ -1,1 +1,1 @@
-export const API_URL = 'https://ckksi-14-139-228-10.run.pinggy-free.link';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';

@@ -22,31 +22,31 @@ const AdminDashboard = () => {
       setLoading(true);
       
       // Fetch Stats
-      const statsRes = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/stats`);
+      const statsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/stats`);
       if (statsRes.data.success) {
         setStats(statsRes.data.data);
       }
 
       // Fetch Users
-      const usersRes = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/users`);
+      const usersRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users`);
       if (usersRes.data.success) {
         setUsers(usersRes.data.data);
       }
 
       // Fetch reviews for moderation
-      const reviewsRes = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/reviews`);
+      const reviewsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews`);
       if (reviewsRes.data.success) {
         setReviewsList(reviewsRes.data.data);
       }
 
       // Fetch support enquiries
-      const enquiriesRes = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/enquiries`);
+      const enquiriesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries`);
       if (enquiriesRes.data.success) {
         setEnquiriesList(enquiriesRes.data.data);
       }
 
       // Fetch orders for moderation
-      const ordersRes = await axios.get(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/orders`);
+      const ordersRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`);
       if (ordersRes.data.success) {
         setRecentOrders(ordersRes.data.data);
       }
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      const res = await axios.put(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/users/${userId}/role`, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users/${userId}/role`, {
         role: newRole
       });
 
@@ -106,7 +106,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this user account? All their reviews and restaurant items will be permanently erased.')) return;
 
     try {
-      const res = await axios.delete(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/users/${userId}`);
+      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users/${userId}`);
       if (res.data.success) {
         alert('User account deleted successfully.');
         setUsers((prev) => prev.filter((u) => u._id !== userId));
@@ -119,7 +119,7 @@ const AdminDashboard = () => {
 
   const handleReviewToggleHide = async (reviewId) => {
     try {
-      const res = await axios.put(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/reviews/${reviewId}/hide`);
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews/${reviewId}/hide`);
       if (res.data.success) {
         alert(res.data.message);
         setReviewsList((prev) =>
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to permanently delete this customer review?')) return;
 
     try {
-      const res = await axios.delete(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/admin/reviews/${reviewId}`);
+      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews/${reviewId}`);
       if (res.data.success) {
         alert(res.data.message);
         setReviewsList((prev) => prev.filter((r) => r._id !== reviewId));
@@ -147,7 +147,7 @@ const AdminDashboard = () => {
 
   const handleEnquiryStatusChange = async (enquiryId, newStatus) => {
     try {
-      const res = await axios.put(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/enquiries/${enquiryId}/status`, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries/${enquiryId}/status`, {
         status: newStatus
       });
       if (res.data.success) {
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this enquiry record?')) return;
 
     try {
-      const res = await axios.delete(`${'https://ckksi-14-139-228-10.run.pinggy-free.link'}/api/enquiries/${enquiryId}`);
+      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries/${enquiryId}`);
       if (res.data.success) {
         alert(res.data.message);
         setEnquiriesList((prev) => prev.filter((e) => e._id !== enquiryId));
