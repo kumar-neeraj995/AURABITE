@@ -8,7 +8,7 @@ const Auth = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [generatedOtp, setGeneratedOtp] = useState('123456');
+  const [generatedOtp, setGeneratedOtp] = useState(() => Math.floor(100000 + Math.random() * 900000).toString());
   const [showOtpPopup, setShowOtpPopup] = useState(false);
   const [role, setRole] = useState('customer'); // default
   const [formError, setFormError] = useState('');
@@ -82,6 +82,7 @@ const Auth = () => {
     setOtp('');
     setRole('customer');
     setFormError('');
+    setGeneratedOtp(Math.floor(100000 + Math.random() * 900000).toString());
   };
 
   return (

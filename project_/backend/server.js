@@ -55,9 +55,19 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 
+const path = require('path');
+
 // Simple Healthcheck API
-app.get('/', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'AuraBite Server API is running healthy.' });
+});
+
+// Serve frontend static files
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(frontendDistPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 // Socket.io Real-Time connection logic
