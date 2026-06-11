@@ -13,7 +13,9 @@ const connectDB = async () => {
       console.log('Successfully connected to MongoDB.');
     } else {
       console.log('No MONGODB_URI provided. Starting In-Memory MongoDB Server...');
-      mongod = await MongoMemoryServer.create();
+      mongod = await MongoMemoryServer.create({
+        binary: { version: '7.0.14' }
+      });
       const uri = mongod.getUri();
       console.log(`In-Memory MongoDB Server running at: ${uri}`);
       await mongoose.connect(uri);
@@ -24,7 +26,9 @@ const connectDB = async () => {
     if (!mongod) {
       try {
         console.log('Attempting in-memory MongoDB fallback due to connection failure...');
-        mongod = await MongoMemoryServer.create();
+        mongod = await MongoMemoryServer.create({
+          binary: { version: '7.0.14' }
+        });
         const uri = mongod.getUri();
         console.log(`In-Memory MongoDB Fallback Server running at: ${uri}`);
         await mongoose.connect(uri);

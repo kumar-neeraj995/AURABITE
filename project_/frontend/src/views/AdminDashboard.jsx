@@ -11,7 +11,15 @@ const AdminDashboard = () => {
   const [reviewsList, setReviewsList] = useState([]);
   const [enquiriesList, setEnquiriesList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('metrics'); // metrics, users, moderation, reviews, enquiries
+  const [activeTab, setActiveTab] = useState('metrics'); // metrics, users, restaurants, moderation, reviews, enquiries
+
+  // New Restaurant State
+  const [restaurantsList, setRestaurantsList] = useState([]);
+  const [newRestName, setNewRestName] = useState('');
+  const [newRestCuisine, setNewRestCuisine] = useState('');
+  const [newRestAddress, setNewRestAddress] = useState('');
+  const [newRestDescription, setNewRestDescription] = useState('');
+  const [isAddingRest, setIsAddingRest] = useState(false);
 
   // Moderation feeds
   const [recentOrders, setRecentOrders] = useState([]);
@@ -22,31 +30,37 @@ const AdminDashboard = () => {
       setLoading(true);
       
       // Fetch Stats
-      const statsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/stats`);
+      const statsRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/stats`);
       if (statsRes.data.success) {
         setStats(statsRes.data.data);
       }
 
       // Fetch Users
-      const usersRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users`);
+      const usersRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/users`);
       if (usersRes.data.success) {
         setUsers(usersRes.data.data);
       }
 
       // Fetch reviews for moderation
-      const reviewsRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews`);
+      const reviewsRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/reviews`);
       if (reviewsRes.data.success) {
         setReviewsList(reviewsRes.data.data);
       }
 
+      // Fetch restaurants
+      const restsRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/restaurants`);
+      if (restsRes.data.success) {
+        setRestaurantsList(restsRes.data.data);
+      }
+
       // Fetch support enquiries
-      const enquiriesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries`);
+      const enquiriesRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/enquiries`);
       if (enquiriesRes.data.success) {
         setEnquiriesList(enquiriesRes.data.data);
       }
 
       // Fetch orders for moderation
-      const ordersRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`);
+      const ordersRes = await axios.get(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/orders`);
       if (ordersRes.data.success) {
         setRecentOrders(ordersRes.data.data);
       }
@@ -84,7 +98,7 @@ const AdminDashboard = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users/${userId}/role`, {
+      const res = await axios.put(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/users/${userId}/role`, {
         role: newRole
       });
 
@@ -106,7 +120,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this user account? All their reviews and restaurant items will be permanently erased.')) return;
 
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/users/${userId}`);
+      const res = await axios.delete(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/users/${userId}`);
       if (res.data.success) {
         alert('User account deleted successfully.');
         setUsers((prev) => prev.filter((u) => u._id !== userId));
@@ -117,9 +131,38 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleCreateRestaurant = async (e) => {
+    e.preventDefault();
+    if (!newRestName || !newRestCuisine || !newRestAddress) {
+      return alert('Please fill in Name, Cuisine, and Address.');
+    }
+    try {
+      setIsAddingRest(true);
+      const res = await axios.post(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/restaurants`, {
+        name: newRestName,
+        cuisineType: newRestCuisine,
+        address: newRestAddress,
+        description: newRestDescription || 'A new amazing restaurant.',
+        openingHours: '09:00 AM - 09:00 PM'
+      });
+      if (res.data.success) {
+        alert('Restaurant created successfully!');
+        setNewRestName('');
+        setNewRestCuisine('');
+        setNewRestAddress('');
+        setNewRestDescription('');
+        fetchAdminData();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to create restaurant.');
+    } finally {
+      setIsAddingRest(false);
+    }
+  };
+
   const handleReviewToggleHide = async (reviewId) => {
     try {
-      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews/${reviewId}/hide`);
+      const res = await axios.put(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/reviews/${reviewId}/hide`);
       if (res.data.success) {
         alert(res.data.message);
         setReviewsList((prev) =>
@@ -135,7 +178,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to permanently delete this customer review?')) return;
 
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/reviews/${reviewId}`);
+      const res = await axios.delete(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/admin/reviews/${reviewId}`);
       if (res.data.success) {
         alert(res.data.message);
         setReviewsList((prev) => prev.filter((r) => r._id !== reviewId));
@@ -147,7 +190,7 @@ const AdminDashboard = () => {
 
   const handleEnquiryStatusChange = async (enquiryId, newStatus) => {
     try {
-      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries/${enquiryId}/status`, {
+      const res = await axios.put(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/enquiries/${enquiryId}/status`, {
         status: newStatus
       });
       if (res.data.success) {
@@ -165,7 +208,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this enquiry record?')) return;
 
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/enquiries/${enquiryId}`);
+      const res = await axios.delete(`${import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:5000')}/api/enquiries/${enquiryId}`);
       if (res.data.success) {
         alert(res.data.message);
         setEnquiriesList((prev) => prev.filter((e) => e._id !== enquiryId));
@@ -225,9 +268,10 @@ const AdminDashboard = () => {
         gap: '1rem',
         borderBottom: '1px solid var(--border-glass)',
         marginBottom: '2.5rem',
-        paddingBottom: '0.5rem'
+        paddingBottom: '0.5rem',
+        overflowX: 'auto'
       }}>
-        {['metrics', 'users', 'moderation', 'reviews', 'enquiries'].map((tab) => (
+        {['metrics', 'users', 'restaurants', 'moderation', 'reviews', 'enquiries'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -239,7 +283,8 @@ const AdminDashboard = () => {
               color: activeTab === tab ? '#000' : 'var(--text-secondary)',
               border: activeTab === tab ? 'none' : '1px solid var(--border-glass)',
               fontWeight: 600,
-              textTransform: 'capitalize'
+              textTransform: 'capitalize',
+              whiteSpace: 'nowrap'
             }}
           >
             {tab === 'moderation'
@@ -248,6 +293,8 @@ const AdminDashboard = () => {
               ? 'Review Moderation'
               : tab === 'enquiries'
               ? 'Support Enquiries'
+              : tab === 'restaurants'
+              ? 'Restaurants'
               : tab}
           </button>
         ))}
@@ -385,6 +432,53 @@ const AdminDashboard = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* TAB CONTENT: RESTAURANTS MANAGER */}
+      {activeTab === 'restaurants' && (
+        <div style={{ animation: 'fadeIn 0.3s ease' }}>
+          <div className="glass-panel" style={{ padding: '2rem', background: 'var(--bg-secondary)', marginBottom: '2rem' }}>
+            <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', marginBottom: '1.5rem', color: '#fff' }}>
+              <i className="fa-solid fa-plus" style={{ color: 'var(--accent-gold)', marginRight: '0.5rem' }}></i>
+              Register New Restaurant
+            </h2>
+            <form onSubmit={handleCreateRestaurant} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <input type="text" className="form-input" placeholder="Restaurant Name" value={newRestName} onChange={e => setNewRestName(e.target.value)} required />
+              <input type="text" className="form-input" placeholder="Cuisine Type" value={newRestCuisine} onChange={e => setNewRestCuisine(e.target.value)} required />
+              <input type="text" className="form-input" placeholder="Address" value={newRestAddress} onChange={e => setNewRestAddress(e.target.value)} required />
+              <input type="text" className="form-input" placeholder="Short Description" value={newRestDescription} onChange={e => setNewRestDescription(e.target.value)} />
+              <button type="submit" className="btn btn-primary" disabled={isAddingRest} style={{ gridColumn: '1 / -1' }}>
+                {isAddingRest ? 'Creating...' : 'Create Restaurant'}
+              </button>
+            </form>
+          </div>
+
+          <div className="glass-panel" style={{ padding: '2rem', background: 'var(--bg-secondary)', overflowX: 'auto' }}>
+            <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', marginBottom: '1.5rem', color: '#fff' }}>
+              Active Restaurants Directory
+            </h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border-glass)', color: 'var(--text-secondary)' }}>
+                  <th style={{ padding: '1rem 0.5rem' }}>Name</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Cuisine</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Rating</th>
+                  <th style={{ padding: '1rem 0.5rem' }}>Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {restaurantsList.map((r) => (
+                  <tr key={r._id} style={{ borderBottom: '1px solid var(--border-glass)' }}>
+                    <td style={{ padding: '1rem 0.5rem', color: 'var(--text-primary)', fontWeight: 600 }}>{r.name}</td>
+                    <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{r.cuisineType}</td>
+                    <td style={{ padding: '1rem 0.5rem', color: 'var(--accent-gold)' }}>★ {r.averageRating.toFixed(1)}</td>
+                    <td style={{ padding: '1rem 0.5rem', color: 'var(--text-muted)' }}>{new Date(r.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

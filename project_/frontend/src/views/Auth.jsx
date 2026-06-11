@@ -22,7 +22,7 @@ const Auth = () => {
     }
   }, [email]);
 
-  const { login, register, user, error: authError } = useAuth();
+  const { login, register, user, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -55,7 +55,7 @@ const Auth = () => {
       return;
     }
 
-    if (otp !== generatedOtp) {
+    if (otp.trim() !== generatedOtp.trim()) {
       setFormError('Invalid OTP. Please check the popup.');
       setIsSubmitting(false);
       return;
@@ -63,9 +63,9 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        await login(email, 'dummyPassword', true, role);
+        await login(email.trim(), 'dummyPassword', true, role);
       } else {
-        await register(username, email, 'dummyPassword', role);
+        await register(username.trim(), email.trim(), 'dummyPassword', role);
       }
       // Navigation is handled by the useEffect watching the 'user' state
     } catch (err) {
@@ -82,6 +82,7 @@ const Auth = () => {
     setOtp('');
     setRole('customer');
     setFormError('');
+    if (clearError) clearError();
     setGeneratedOtp(Math.floor(100000 + Math.random() * 900000).toString());
   };
 
@@ -315,7 +316,7 @@ const Auth = () => {
                 animation: 'spin 1s linear infinite'
               }} />
             ) : (
-              <span>{isLogin ? 'Log In' : 'Sign Up & Begin Done'}</span>
+              <span>{isLogin ? 'Log In' : 'Sign Up'}</span>
             )}
           </button>
         </form>
